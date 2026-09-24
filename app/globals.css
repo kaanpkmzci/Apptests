@@ -869,3 +869,59 @@ button:disabled {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------- API key field ---------- */
+.keyform {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.keyform input {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 15px;
+}
+.savebtn {
+  height: 48px;
+  border-radius: 14px;
+  background: var(--them);
+  color: var(--them-ink);
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+.savebtn:disabled {
+  opacity: 0.4;
+}
+.keyrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--them-soft);
+}
+.keyrow__ok {
+  color: var(--them);
+  font-weight: 700;
+  font-size: 14px;
+}
+.keyrow code {
+  color: var(--muted);
+  font-size: 13px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.linkbtn {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 6px 0;
+}
+.keyerr {
+  color: var(--danger) !important;
+  margin-top: 4px;
+}

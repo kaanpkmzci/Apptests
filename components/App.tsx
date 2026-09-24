@@ -697,21 +697,17 @@ export default function App() {
                   />
                 </label>
 
-                <div className="field">
-                  <b>OpenAI API anahtarı</b>
-                  <small>
-                    {serverKey
-                      ? "Sunucuda anahtar tanımlı, burayı boş bırakabilirsin."
-                      : "Sunucuda anahtar yok. Kendi anahtarını gir; sadece bu cihazda saklanır."}
-                  </small>
-                  <input
-                    type="password"
-                    placeholder="sk-..."
-                    autoComplete="off"
-                    value={settings.apiKey}
-                    onChange={(e) => setSettings((s) => ({ ...s, apiKey: e.target.value.trim() }))}
-                  />
-                </div>
+                <KeyField
+                  saved={settings.apiKey}
+                  serverKey={!!serverKey}
+                  onSave={(apiKey) => {
+                    const next = { ...settings, apiKey };
+                    setSettings(next);
+                    try {
+                      localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
+                    } catch {}
+                  }}
+                />
 
                 <div className="field">
                   <b>Ana ekrana ekle</b>
@@ -764,5 +760,95 @@ function TypeSheet({ me, them, onSend }: { me: string; them: string; onSend: (te
         </button>
       </form>
     </>
+  );
+}
+
+const KEY_ERRORS: Record<string, string> = {
+  invalid_key: "OpenAI bu anahtarı kabul etmedi. Tamamını kopyaladığından emin ol.",
+  no_model_access: "Anahtar geçerli ama ses modellerine erişimi yok. OpenAI hesabına bakiye yüklemen gerekebilir.",
+  missing_key: "Anahtar boş.",
+};
+
+function KeyField({ saved, serverKey, onSave }: { saved: string; serverKey: boolean; onSave: (key: string) => void }) {
+  const [editing, setEditing] = useState(!saved);
+  const [draft, setDraft] = useState("");
+  const [state, setState] = useState<"idle" | "checking" | "ok" | "error">(saved ? "ok" : "idle");
+  const [message, setMessage] = useState("");
+
+  const save = async () => {
+    const key = draft.replace(/\s+/g, "");
+    if (!key) return;
+    setState("checking");
+    setMessage("");
+    try {
+      const res = await fetch("/api/check", { method: "POST", headers: { "x-openai-key": key } });
+      const data = await res.json().catch(() => ({}));
+      // With a server key configured the check validates that one, so only trust a 200 here.
+      if (!res.ok) {
+        setState("error");
+        setMessage(KEY_ERRORS[data.error] ?? "Anahtar kontrol edilemedi. İnternet bağlantını kontrol edip tekrar dene.");
+        return;
+      }
+      onSave(key);
+      setState("ok");
+      setEditing(false);
+      setDraft("");
+      vibrate(20);
+    } catch {
+      setState("error");
+      setMessage("Bağlantı yok. İnternete bağlanıp tekrar dene.");
+    }
+  };
+
+  const masked = saved ? `${saved.slice(0, 7)}…${saved.slice(-4)}` : "";
+
+  return (
+    <div className="field">
+      <b>OpenAI API anahtarı</b>
+      <small>
+        {serverKey
+          ? "Sunucuda anahtar tanımlı, burayı boş bırakabilirsin."
+          : "Anahtar sadece bu telefonda saklanır. platform.openai.com → API keys’ten alabilirsin."}
+      </small>
+
+      {!editing && saved ? (
+        <div className="keyrow">
+          <span className="keyrow__ok">✓ Kaydedildi</span>
+          <code>{masked}</code>
+          <button className="linkbtn" onClick={() => { setEditing(true); setState("idle"); }}>
+            Değiştir
+          </button>
+        </div>
+      ) : (
+        <form
+          className="keyform"
+          onSubmit={(e) => {
+            e.preventDefault();
+            save();
+          }}
+        >
+          <input
+            type="text"
+            inputMode="text"
+            placeholder="sk-proj-..."
+            autoComplete="off"
+            autoCapitalize="off"
+            autoCorrect="off"
+            spellCheck={false}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+          />
+          <button className="savebtn" disabled={!draft.trim() || state === "checking"}>
+            {state === "checking" ? <span className="spinner" /> : "Kaydet ve test et"}
+          </button>
+          {saved && (
+            <button type="button" className="linkbtn" onClick={() => setEditing(false)}>
+              Vazgeç
+            </button>
+          )}
+        </form>
+      )}
+      {state === "error" && <small className="keyerr">{message}</small>}
+    </div>
   );
 }
