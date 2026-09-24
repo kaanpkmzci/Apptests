@@ -79,11 +79,11 @@ button:disabled {
   letter-spacing: -0.02em;
   font-size: 19px;
 }
-.brand__dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 4px;
-  background: linear-gradient(135deg, var(--me) 50%, var(--them) 50%);
+.brand__logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: block;
 }
 .pair {
   flex: 1;
@@ -275,6 +275,13 @@ button:disabled {
   border: 1px solid var(--line);
   color: var(--muted);
   margin-bottom: 16px;
+}
+.empty__logo {
+  width: 96px;
+  height: 96px;
+  border-radius: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 40px rgba(99, 102, 241, 0.35);
 }
 .empty h1 {
   margin: 0 0 8px;

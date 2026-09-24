@@ -1,6 +1,6 @@
 // Offline shell: the app opens without internet; history lives in IndexedDB.
-const CACHE = "ciao-v1";
-const SHELL = ["/", "/manifest.webmanifest", "/icon", "/apple-icon"];
+const CACHE = "ciao-v2";
+const SHELL = ["/", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/logo.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));

@@ -447,11 +447,7 @@ export default function App() {
 
   const empty = (
     <div className="empty">
-      <div className="empty__badge">
-        <span>{me.flag}</span>
-        <I.Swap width={18} height={18} />
-        <span>{them.flag}</span>
-      </div>
+      <img className="empty__logo" src="/icon-192.png" alt="Ciao" width={96} height={96} />
       <h1>Konuş, anlaşılsın.</h1>
       <p>
         Kendi butonuna <b>basılı tut</b> ve {me.native} konuş. Bıraktığında {them.native} diline çevrilip sesli okunur.
@@ -547,7 +543,7 @@ export default function App() {
         <>
           <header className="top">
             <div className="brand">
-              <span className="brand__dot" />
+              <img className="brand__logo" src="/logo.png" alt="" width={28} height={28} />
               Ciao
             </div>
             <div className="pair">
