@@ -1,0 +1,14 @@
+{
+  "name": "Ciao · Sesli Çeviri",
+  "short_name": "Ciao",
+  "description": "Bas-konuş sesli çevirmen",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0d12",
+  "theme_color": "#0b0d12",
+  "icons": [
+    { "src": "/icon", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
